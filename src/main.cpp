@@ -7,29 +7,39 @@
 #include <glm/mat4x4.hpp>
 
 #include <iostream>
+#include "../include/Window.h"
+#include "../include/VulkanLoader.h"
+#include "../include/DeviceHandler.h"
 
-int main() {
+Window* window;
+VkInstance vulkan_instance;
+DeviceHandler device_handler;
+
+
+void init() {
     glfwInit();
+    window = new Window(800, 600, "Hello World");
+    vulkan_instance = VulkanLoader::createVulkanInstance();
+    device_handler.identifyDevices(vulkan_instance);
+    device_handler.selectSuitableDevice();
+}
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
-
-    uint32_t extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-    std::cout << extensionCount << " extensions supported\n";
-
-    glm::mat4 matrix;
-    glm::vec4 vec;
-    auto test = matrix * vec;
-
-    while(!glfwWindowShouldClose(window)) {
+void mainLoop() {
+    GLFWwindow* window_object = window->getWindowObject();
+    while(!glfwWindowShouldClose(window_object)) {
         glfwPollEvents();
     }
+}
 
-    glfwDestroyWindow(window);
-
+void cleanup() {
+    vkDestroyInstance(vulkan_instance, nullptr);
+    window->destroyWindowObject();
     glfwTerminate();
+}
 
+int main() {
+    init();
+    mainLoop();
+    cleanup();
     return 0;
 }
