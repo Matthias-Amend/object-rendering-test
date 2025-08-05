@@ -11,13 +11,14 @@
 class DeviceHandler {
 
 private:
-    VkPhysicalDevice physical_device;
-    std::vector<VkPhysicalDevice> device_list;
-    bool isDeviceSuitable(VkPhysicalDevice device);
+    struct QueueFamilyIndices;
+    static bool isDeviceSuitable(VkPhysicalDevice device);
+    static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physical_device);
 
 public:
     void identifyDevices(VkInstance instance);
     void selectSuitableDevice();
+    void createLogicalDevice();
     VkPhysicalDevice getPhysicalDevice();
 
 };

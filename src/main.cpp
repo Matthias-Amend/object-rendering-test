@@ -15,7 +15,6 @@ Window* window;
 VkInstance vulkan_instance;
 DeviceHandler device_handler;
 
-
 void init() {
     glfwInit();
     window = new Window(800, 600, "Hello World");
