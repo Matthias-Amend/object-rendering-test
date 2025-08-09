@@ -7,15 +7,17 @@
 
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
 
 class VulkanLoader {
 
 private:
-    static VkApplicationInfo createApplicationInfo();
-    static VkInstanceCreateInfo createInstanceCreateInfo();
-
+    VkApplicationInfo createApplicationInfo();
+    VkInstanceCreateInfo createInstanceCreateInfo();
 public:
-    static VkInstance createVulkanInstance();
+    void createVulkanInstance();
+    VkInstance getVulkanInstance();
+    void cleanup();
 
 };
 

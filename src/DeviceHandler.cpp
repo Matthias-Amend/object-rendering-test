@@ -7,6 +7,7 @@
 
 VkPhysicalDevice selected_physical_device = VK_NULL_HANDLE;
 VkDevice selected_logical_device;
+VkQueue graphics_queue;
 
 std::vector<VkPhysicalDevice> device_list;
 
@@ -73,14 +74,55 @@ bool DeviceHandler::isDeviceSuitable(VkPhysicalDevice device) {
     return queue_family_indices.graphics_family.has_value();
 }
 
+/**
+ * Create the logical device.
+ */
 void DeviceHandler::createLogicalDevice() {
-    
+    QueueFamilyIndices queue_family_indices = findQueueFamilies(selected_physical_device);
+    VkDeviceQueueCreateInfo queue_create_info{};
+    queue_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queue_create_info.queueFamilyIndex = queue_family_indices.graphics_family.value();
+    queue_create_info.queueCount = 1;
+    float queue_priority = 1.0f;
+    queue_create_info.pQueuePriorities = &queue_priority;
+    VkPhysicalDeviceFeatures physical_device_features{};
+    VkDeviceCreateInfo create_info{};
+    create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    create_info.pQueueCreateInfos = &queue_create_info;
+    create_info.queueCreateInfoCount = 1;
+    create_info.pEnabledFeatures = &physical_device_features;
+    vkCreateDevice(selected_physical_device, &create_info, nullptr, &selected_logical_device);
+    vkGetDeviceQueue(selected_logical_device, queue_family_indices.graphics_family.value(), 0, &graphics_queue);
 }
 
 /**
- * Get the selected physical selected_logical_device.
- * @return The physical selected_logical_device
+ * Destroy all Vulkan objects to free memory space.
+ * This function is called when the program is terminated
+ */
+void DeviceHandler::cleanup() {
+    vkDestroyDevice(selected_logical_device, nullptr);
+}
+
+/**
+ * Get the selected physical device.
+ * @return The physical device
  */
 VkPhysicalDevice DeviceHandler::getPhysicalDevice() {
     return selected_physical_device;
+}
+
+/**
+ * Get the selected logical device.
+ * @return The logical device
+ */
+VkDevice DeviceHandler::getLogicalDevice() {
+    return selected_logical_device;
+}
+
+/**
+ * Get the graphics queue.
+ * @return The graphics queue
+ */
+VkQueue DeviceHandler::getGraphicsQueue() {
+    return graphics_queue;
 }

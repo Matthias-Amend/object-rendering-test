@@ -6,21 +6,23 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
-#include <iostream>
 #include "../include/Window.h"
 #include "../include/VulkanLoader.h"
 #include "../include/DeviceHandler.h"
 
 Window* window;
-VkInstance vulkan_instance;
 DeviceHandler device_handler;
+VulkanLoader vulkan_loader;
 
 void init() {
-    glfwInit();
+    if(!glfwInit()) {
+        throw std::runtime_error("Failed to initialize GLFW");
+    }
     window = new Window(800, 600, "Hello World");
-    vulkan_instance = VulkanLoader::createVulkanInstance();
-    device_handler.identifyDevices(vulkan_instance);
+    vulkan_loader.createVulkanInstance();
+    device_handler.identifyDevices(vulkan_loader.getVulkanInstance());
     device_handler.selectSuitableDevice();
+    device_handler.createLogicalDevice();
 }
 
 void mainLoop() {
@@ -31,7 +33,8 @@ void mainLoop() {
 }
 
 void cleanup() {
-    vkDestroyInstance(vulkan_instance, nullptr);
+    vulkan_loader.cleanup();
+    device_handler.cleanup();
     window->destroyWindowObject();
     glfwTerminate();
 }

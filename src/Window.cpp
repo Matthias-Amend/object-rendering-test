@@ -17,7 +17,7 @@ Window::Window(int width, int height, const char *title) {
  * Function called after the program has ended to free up resources
  */
 void Window::destroyWindowObject() {
-    glfwDestroyWindow(Window::window_object);
+    glfwDestroyWindow(window_object);
 }
 
 /**

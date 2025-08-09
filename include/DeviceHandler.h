@@ -19,8 +19,10 @@ public:
     void identifyDevices(VkInstance instance);
     void selectSuitableDevice();
     void createLogicalDevice();
+    void cleanup();
     VkPhysicalDevice getPhysicalDevice();
-
+    VkDevice getLogicalDevice();
+    VkQueue getGraphicsQueue();
 };
 
 
